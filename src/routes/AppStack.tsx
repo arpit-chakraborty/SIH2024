@@ -18,7 +18,6 @@ export const AppStack = () => {
       headerShown: false
     }}
       initialRouteName='Home'
-      
     >
       <Stack.Screen name='Home' component={Home} />
     </Stack.Navigator>

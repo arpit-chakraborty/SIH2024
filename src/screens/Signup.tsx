@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, KeyboardAvoidingView, TextInput, Pressable, Platform, TouchableOpacity, Image } from 'react-native'
+import { StyleSheet, Text, View, KeyboardAvoidingView, TextInput, Pressable, Platform, TouchableOpacity, Image, ImageBackground } from 'react-native'
 import React, {useContext, useState} from 'react'
 import CheckBox from '@react-native-community/checkbox';
 
@@ -75,7 +75,7 @@ const Signup = ({navigation}: SignupScreenProps) => {
       </TouchableOpacity>
 
       {/* Logo */}
-      <Image
+      <ImageBackground
         source={require('../../assets/logo.png')} // Replace with the actual logo path
         style={styles.logo}
         resizeMode="contain"
@@ -135,9 +135,11 @@ const Signup = ({navigation}: SignupScreenProps) => {
           onValueChange={setIsChecked}
           style={styles.checkbox}
         />
-        <Text style={styles.checkboxText}>
-          I agree with the Terms of Service and Privacy policy
-        </Text>
+        <TouchableOpacity onPress={() => navigation.navigate('Terms')}>
+          <Text style={styles.checkboxText}>
+            I agree with the Terms of Service and Privacy policy
+          </Text>
+        </TouchableOpacity>
       </View>
 
       {/* Create Account Button */}
@@ -181,6 +183,7 @@ const styles = StyleSheet.create({
     height: 100,
     marginBottom: 20,
     marginTop: 50,
+    elevation: -1
   },
   title: {
     fontSize: 28,

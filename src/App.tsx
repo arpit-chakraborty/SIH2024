@@ -7,14 +7,13 @@ import {
 import {AppwriteProvider} from './appwrite/AppwriteContext'
 
 import {Router} from './routes/Router'
-import HomeScreen from './screens/Home2';
 
 function App(): JSX.Element {
 
 
   return (
     <AppwriteProvider>
-      <HomeScreen />
+      <Router />
     </AppwriteProvider>
   );
 }

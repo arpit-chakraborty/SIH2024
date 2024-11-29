@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFD700', // Yellow background
     alignItems: 'center',
-    paddingTop: 50,
+    paddingTop: 10,
   },
   backButton: {
     alignSelf: 'flex-start',
@@ -124,9 +124,10 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   logo: {
-    width: 180,
-    height: 180,
+    width: 130,
+    height: 140,
     marginBottom: 20,
+
   },
   title: {
     fontSize: 28,
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
   },
   loginButton: {
     width: '80%',
-    backgroundColor: '#003366',
+    backgroundColor: '#000',
     padding: 15,
     borderRadius: 25,
     alignItems: 'center',
@@ -181,10 +182,10 @@ const styles = StyleSheet.create({
   signupText: {
     fontSize: 16,
     marginTop: 20,
-    color: '#000',
+    color: '#FFF',
   },
   signupLink: {
-    color: 'white',
+    color: '#0000FF',
     fontWeight: 'bold',
   },
 });

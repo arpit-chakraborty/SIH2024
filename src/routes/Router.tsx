@@ -8,6 +8,7 @@ import Loading from '../components/Loading';
 //Routes
 import { AppStack } from './AppStack';
 import { AuthStack } from './AuthStack';
+import AppStack2 from './AppStack2';
 
 
 
@@ -36,7 +37,7 @@ export const Router = () => {
 
   return (
     <NavigationContainer>
-        {isLoggedIn ? <AppStack /> : <AuthStack/> }
+        {isLoggedIn ? <AppStack2 /> : <AuthStack/> }
     </NavigationContainer>
   )
 }

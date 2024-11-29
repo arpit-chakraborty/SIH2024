@@ -42,7 +42,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFD700', // Bright yellow background
     alignItems: 'center',
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
   },
   titleContainer: {
     paddingTop: 50,
@@ -50,14 +50,14 @@ const styles = StyleSheet.create({
     paddingRight: '50%',
   },
   title: {
-    fontSize: 32,
+    fontSize: 29,
     fontWeight: 'bold',
     color: '#003366', // Deep blue text color
     textAlign: 'center',
     marginBottom: 10,
   },
   subtitle: {
-    fontSize: 22,
+    fontSize: 20,
     color: '#003366',
     textAlign: 'left',
     marginBottom: 20,
