@@ -1,6 +1,4 @@
-// chatUtils.tsx
 
-// Define the structure of a chat message
 export interface Message {
   id: number;
   text: string;
@@ -9,20 +7,18 @@ export interface Message {
   sender: 'user' | 'bot';
 }
 
-// Function to handle adding user messages to the chat
 export const addUserMessage = (
   message: string,
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>
 ) => {
   const newMessage: Message = {
     id: Date.now(), 
-    uri: '',            // Unique ID based on the current timestamp
+    uri: '',
     text: message,  
-    sender: 'user',            // Indicates that this message is from the user
+    sender: 'user',
     type: 'text',
   };
 
-  // Update the chat state by appending the new user message
   setMessages((prevMessages) => [...prevMessages, newMessage]);
 };
 
@@ -39,11 +35,11 @@ export const addBotMessage = (
     type: 'text',
   };
 
-  // Update the chat state by appending the new bot message
+
   setMessages((prevMessages) => [...prevMessages, replyMessage]);
 };
 
-// Function to handle adding media messages (image or audio) to the chat
+
 export const addMediaMessage = (
   uri: string,
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
@@ -56,7 +52,6 @@ export const addMediaMessage = (
     sender: 'user',
     type: type,
   };
-
   setMessages((prevMessages) => [...prevMessages, newMessage]);
 };
 

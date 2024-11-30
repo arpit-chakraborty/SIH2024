@@ -10,6 +10,7 @@ import {AppwriteContext} from '../appwrite/AppwriteContext'
 // Navigation
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {AuthStackParamList} from '../routes/AuthStack';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 type LoginScreenProps = NativeStackScreenProps<AuthStackParamList, 'Login'>
 
@@ -94,7 +95,7 @@ const Login = ({navigation}: LoginScreenProps) => {
 
       <TouchableOpacity style={styles.loginButton}
       onPress={handleLogin}
-       >
+      >
         <Text style={styles.loginText}>Login</Text>
       </TouchableOpacity>
 
@@ -103,7 +104,7 @@ const Login = ({navigation}: LoginScreenProps) => {
         onPress={() => navigation.navigate('Signup')}>
         <Text style={styles.signupLink}>Sign Up</Text>
       </TouchableOpacity>
-    </View>
+    </View>    
   );
 }
 
