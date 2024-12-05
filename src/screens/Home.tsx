@@ -3,7 +3,6 @@ import {
   StyleSheet,
   Text,
   View,
-  SafeAreaView,
   Image,
   TouchableOpacity,
   ImageBackground,
@@ -25,21 +24,23 @@ import {
 
 import Snackbar from 'react-native-snackbar';
 
-import {AppwriteContext} from '../appwrite/AppwriteContext';
+import {AuthContext} from '../appwrite/AuthContext';
+import {useAppContext} from '../AppContext';
 
-import {saveMessages} from '../service/backend';
+import {fetchCases} from '../service/backend';
 
 import {DrawerParamList} from '../routes/AppStack2';
 import {DrawerNavigationProp} from '@react-navigation/drawer';
 
-import {useFocusEffect} from '@react-navigation/native';
 import {AppState, AppStateStatus} from 'react-native';
+
+import Drawer from '../components/ChatDrawer';
+import NewCasePop from '../components/InputPopup';
 
 const audioRecorderPlayer = new AudioRecorderPlayer();
 
 type UserObj = {
-  name: String;
-  email: String;
+  unique_id: String;
 };
 
 type HomeScreenProps = {
@@ -47,43 +48,51 @@ type HomeScreenProps = {
 };
 
 const Home: React.FC<HomeScreenProps> = ({navigation}) => {
-  const [userData, setUserData] = useState<UserObj>();
-  const {appwrite, setIsLoggedIn} = useContext(AppwriteContext);
+  const {messages, setMessages, caseNumber, victimName, userData} = useAppContext();
+  const { getCurrentUser, logout } = useContext(AuthContext);
   const [input, setInput] = useState('');
-  const [messages, setMessages] = useState<Message[]>([]);
   const flatListRef = useRef<FlatList<Message>>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState('');
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [newCaseVisible, setNewCaseVisible] = useState(false);
+  const [itemsData, setItemsData] = useState([]);
 
   const appState = useRef(AppState.currentState);
+  
 
-  const saveChatData = async () => {
-    console.log('Saving chat data...');
-    let d = new Date();
-    const uniqueId = `${d.toDateString()}-${userData?.email}`;
-     
-    await saveMessages(messages, uniqueId);
-    //await saveMessagesToAppwrite(messages);
+  const showDrawer = async() => {
+    const data = await fetchCases(userData?.unique_id);
+    setItemsData(data);
+    setDrawerVisible(true);
   };
 
-  useEffect(() => {
-    const handleAppStateChange = (nextAppState: AppStateStatus) => {
-      if (appState.current.match(/active/) && nextAppState === 'background') {
-        saveChatData(); // Save data when app goes to background
-      }
-      appState.current = nextAppState;
-    };
+  // const saveChatData = async () => {
+  //   if(userData && caseNumber && victimName){
+  //       console.log('Saving chat data...');
+  //       const uniqueId = `${userData?.unique_id}`;        
+  //       await saveMessages(messages, uniqueId);
+  //   }
+  // }
 
-    const subscription = AppState.addEventListener(
-      'change',
-      handleAppStateChange,
-    );
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState: AppStateStatus) => {
+  //     if (appState.current.match(/active/) && nextAppState === 'background') {
+  //       saveChatData(); // Save data when app goes to background
+  //     }
+  //     appState.current = nextAppState;
+  //   };
 
-    return () => {
-      subscription.remove(); // Cleanup listener on component unmount
-    };
-  }, [messages]);
+  //   const subscription = AppState.addEventListener(
+  //     'change',
+  //     handleAppStateChange,
+  //   );
+
+  //   return () => {
+  //     subscription.remove(); // Cleanup listener on component unmount
+  //   };
+  // }, [messages]);
 
   const handleImagePress = (uri: string) => {
     setSelectedImage(uri); // Set the clicked image
@@ -94,8 +103,7 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
   };
 
   const handleLogout = () => {
-    appwrite.logout().then(() => {
-      setIsLoggedIn(false);
+    logout().then(() => {
       Snackbar.show({
         text: 'Logout Successful',
         duration: Snackbar.LENGTH_SHORT,
@@ -119,7 +127,6 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
           );
 
           setTimeout(() => {
-            addBotMessage('Echo: Got Image', setMessages);
             flatListRef.current?.scrollToEnd({animated: true});
           }, 500);
         } catch (error) {
@@ -173,7 +180,6 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
 
           // Simulate bot response
           setTimeout(() => {
-            addBotMessage('Echo: Got Audio', setMessages);
             flatListRef.current?.scrollToEnd({animated: true});
           }, 500);
         }
@@ -193,10 +199,7 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
     setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
   ) => {
     if (input.trim() !== '') {
-      addUserMessage(input, setMessages); // Add user's message to the chat
-      setTimeout(() => {
-        addBotMessage(`Echo: ${input}`, setMessages); // Simulate a bot response with a delay
-      }, 500);
+      addUserMessage(input, setMessages);
       setInput('');
 
       setTimeout(() => {
@@ -205,19 +208,6 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
     }
   };
 
-  useEffect(() => {
-    appwrite.getCurrentUser().then(response => {
-      if (response) {
-        const user: UserObj = {
-          name: response.name,
-          email: response.email,
-        };
-        setUserData(user);
-      }
-    });
-  }, [appwrite]);
-
-  // Render each chat message
   const renderItem = ({item}: {item: Message}) => (
     <View
       style={[
@@ -245,7 +235,12 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
     <View style={styles.container}>
       <View style={styles.headerIcons}>
         <TouchableOpacity>
-          <Icon name="comment-o" size={30} color="black" />
+          <Icon 
+            name="comment-o" 
+            size={30} 
+            color="black"
+            onPress={() => showDrawer()}
+          />
         </TouchableOpacity>
         <TouchableOpacity>
           <Icon
@@ -261,14 +256,27 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
         source={require('../../assets/logo.png')} // Replace with your local image path
         style={styles.logo}
       />
+      { drawerVisible && 
+      <View style={styles.DrawerContainer}>
+        <Drawer
+          visible={drawerVisible}
+          onClose={() => setDrawerVisible(false)}
+          itemsData={itemsData}
+        />
+      </View>}
 
       <FlatList
         ref={flatListRef}
         data={messages}
         keyExtractor={item => item.id.toString()}
         renderItem={item => renderItem(item)}
-        style={styles.messageList}
+        style={[drawerVisible? styles.messageListDown: styles.messageList]}
         contentContainerStyle={styles.chatContainer}
+      />
+
+      <NewCasePop
+        visible={newCaseVisible}
+        onClose={() => setNewCaseVisible(false)}
       />
 
       <Modal visible={!!selectedImage} transparent={true} animationType="fade">
@@ -289,11 +297,11 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
         </View>
       </Modal>
 
-      <View style={styles.inputContainer}>
+      <View style={[drawerVisible? styles.inputContainerDown: styles.inputContainer]}>
         <TextInput
           value={input}
           onChangeText={text => setInput(text)}
-          style={[styles.input]}
+          style={[styles.input,]}
           placeholder="Ask Nyaayveer"
           placeholderTextColor="#000"
           onSubmitEditing={() => handleSend(input, setMessages)}
@@ -319,6 +327,7 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
                 color="black"
               />
             </TouchableOpacity>
+
           </>
         )}
 
@@ -329,6 +338,16 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
             <Icon name="arrow-right" size={25} color="#fff" />
           </TouchableOpacity>
         )}
+        {!input && (
+        <TouchableOpacity onPress={() => setNewCaseVisible(true)}>
+          <Icon
+            name="plus-circle"
+            size={30}
+            color="black"
+            style={styles.PlusButton}
+          >
+          </Icon>
+        </TouchableOpacity>)}
       </View>
     </View>
   );
@@ -373,6 +392,17 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     marginTop: 10,
   },
+  inputContainerDown: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFD700',
+    borderRadius: 50,
+    paddingHorizontal: 10,
+    width: '0%',
+    height: 0,
+    marginBottom: 10,
+    marginTop: 10,
+  },
   input: {
     flex: 1,
     paddingHorizontal: 10,
@@ -388,6 +418,9 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     padding: 10,
   },
+  PlusButton: {
+    marginLeft: 8,
+  },
   bottomContainer: {
     flex: 1,
     justifyContent: 'flex-end',
@@ -396,7 +429,17 @@ const styles = StyleSheet.create({
     width: '100%',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
-    elevation: 10,
+    elevation: 6,
+  },
+  bottomContainerDown: {
+    flex: 1,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
+    backgroundColor: 'yellow',
+    width: '100%',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    elevation: -1,
   },
   messageBubble: {
     padding: 12,
@@ -417,8 +460,12 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   messageList: {
-    elevation: 9,
+    elevation: 5,
     width: '90%',
+  },
+  messageListDown:{
+    elevation: -1,
+    width: '0%',
   },
   mediaImage: {
     width: 200,
@@ -447,6 +494,16 @@ const styles = StyleSheet.create({
     right: 20,
     zIndex: 1,
   },
+  DrawerContainer:{
+    position: "absolute",
+    left: 0,
+    top: 0,
+    bottom: 0,
+    width: 300,
+    backgroundColor: "#ffd700",
+    padding: 15,
+    elevation: 11,
+  }
 });
 
 export default Home;

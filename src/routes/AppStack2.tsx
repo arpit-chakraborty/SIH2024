@@ -2,12 +2,11 @@ import React from 'react';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 
 import Home from '../screens/Home';
-import Terms from '../screens/Terms';
 import CustomDrawerContent from '../components/CustomDrawerContent';
 
 export type DrawerParamList = {
   Home: undefined;
-  Terms: undefined;
+  ChatStack: undefined;
 };
 
 const Drawer = createDrawerNavigator<DrawerParamList>();

@@ -1,3 +1,5 @@
+import { fetchResponse } from "../service/backend";
+
 
 export interface Message {
   id: number;
@@ -7,9 +9,9 @@ export interface Message {
   sender: 'user' | 'bot';
 }
 
-export const addUserMessage = (
+export const addUserMessage = async (
   message: string,
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
 ) => {
   const newMessage: Message = {
     id: Date.now(), 
@@ -18,23 +20,32 @@ export const addUserMessage = (
     sender: 'user',
     type: 'text',
   };
+  // console.log("User: ",currentUserMessage);
+  // setCurrentUserMessage(newMessage);
+  // console.log("User: ",currentUserMessage);
 
   setMessages((prevMessages) => [...prevMessages, newMessage]);
+
+  addBotMessage(setMessages, newMessage);
 };
 
 // Function to handle adding bot messages to the chat
-export const addBotMessage = (
-  reply: string,
-  setMessages: React.Dispatch<React.SetStateAction<Message[]>>
+export const addBotMessage = async (
+  setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
+  message: Message
 ) => {
+
+  console.log("Bot: ",message);
+  const reply = await fetchResponse(message);
+
+
   const replyMessage: Message = {
     id: Date.now() + 1,
     uri: '',
-    text: reply,               // Message content from the bot
-    sender: 'bot',             // Indicates that this message is from the bot
+    text: reply,
+    sender: 'bot',
     type: 'text',
   };
-
 
   setMessages((prevMessages) => [...prevMessages, replyMessage]);
 };
@@ -43,8 +54,9 @@ export const addBotMessage = (
 export const addMediaMessage = (
   uri: string,
   setMessages: React.Dispatch<React.SetStateAction<Message[]>>,
-  type: 'image' | 'audio'
+  type: 'image' | 'audio',
 ) => {
+
   const newMessage: Message = {
     id: Date.now(),
     uri: uri,
@@ -53,5 +65,6 @@ export const addMediaMessage = (
     type: type,
   };
   setMessages((prevMessages) => [...prevMessages, newMessage]);
+  addBotMessage(setMessages, newMessage);
 };
 

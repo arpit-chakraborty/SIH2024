@@ -8,7 +8,7 @@ import { FAB } from '@rneui/themed'
 import Snackbar from 'react-native-snackbar'
 
 //context API
-import {AppwriteContext} from '../appwrite/AppwriteContext'
+import {AuthContext} from '../appwrite/AuthContext'
 
 // Navigation
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -20,52 +20,28 @@ type SignupScreenProps = NativeStackScreenProps<AuthStackParamList, 'Signup'>
 
 
 const Signup = ({navigation}: SignupScreenProps) => {
-  const {appwrite, setIsLoggedIn} = useContext(AppwriteContext)
+  const {signup} = useContext(AuthContext)
 
   const [isChecked, setIsChecked] = useState(false);
   const [error, setError] = useState<string>('')
-  const [name, setName] = useState<string>('')
-  const [email, setEmail] = useState<string>('')
+  const [id, setid] = useState<string>('')
   const [password, setPassword] = useState<string>('')
-  const [repeatPassword, setRepeatPassword] = useState<string>('')
 
   const handleSignup = () => {
     if (
-      name.length < 1 ||
-      email.length < 1 ||
-      password.length < 1 ||
-      repeatPassword.length < 1
+      id.length < 1 ||
+      password.length < 1
       ) {
         setError('All fields are required');
-      } else if (password !== repeatPassword) {
-        setError('Passwords do not match');
       }else if(!isChecked){
         setError('Please accept terms and conditions')
       }
       else {
-        const user = {
-          email,
-          password,
-          name,
-        };
-        appwrite
-        .createAccount(user)
-        .then((response:any) => {
-          if (response) {
-            setIsLoggedIn(true)
-            Snackbar.show({
-              text: 'Signup success',
-              duration: Snackbar.LENGTH_SHORT
-            })
-          }
-        })
-        .catch(e => {
-          console.log(e);
-          setError(e.message)    
-        })
-    
-  }
-}
+        setError('');
+        signup(id,password);
+      }
+  };
+  
   return (
     <View style={styles.container}>
       {/* Back Icon */}
@@ -86,24 +62,14 @@ const Signup = ({navigation}: SignupScreenProps) => {
 
       {/* Input Fields */}
       <TextInput
-        value={name}
+        value={id}
         onChangeText={text => {
           setError('');
-          setName(text);
+          setid(text);
         }}
         placeholderTextColor="#000"
-        placeholder="Enter your name"
+        placeholder="Enter your Badge Number"
         style={styles.input}
-      />
-      <TextInput
-        value={email}
-        onChangeText={text => {
-            setError('');
-            setEmail(text);
-        }}
-        style={styles.input}
-        placeholder="Enter Email"
-        placeholderTextColor="#000"
       />
       <TextInput
         value={password}
@@ -113,17 +79,6 @@ const Signup = ({navigation}: SignupScreenProps) => {
         }}
         style={styles.input}
         placeholder="Enter your password"
-        secureTextEntry={true}
-        placeholderTextColor="#000"
-      />
-      <TextInput
-        value={repeatPassword}
-        onChangeText={text => {
-          setError('');
-          setRepeatPassword(text);
-        }}
-        style={styles.input}
-        placeholder="Enter your password again"
         secureTextEntry={true}
         placeholderTextColor="#000"
       />
@@ -201,6 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     borderWidth: 1,
     borderColor: '#000',
+    color: '#000',
   },
   checkboxContainer: {
     flexDirection: 'row',

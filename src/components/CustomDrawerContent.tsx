@@ -1,20 +1,18 @@
 import React, { useContext } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import {AppwriteContext} from '../appwrite/AppwriteContext'
+import {AuthContext} from '../appwrite/AuthContext'
 import Snackbar from 'react-native-snackbar'
 
 const CustomDrawerContent = (props: any) => {
-    const {appwrite, setIsLoggedIn} = useContext(AppwriteContext)
+    const {logout} = useContext(AuthContext)
 
     const handleLogout = () => {
-        appwrite.logout()
-        .then(() => {
-          setIsLoggedIn(false);
+        logout().then(() => {
           Snackbar.show({
             text: 'Logout Successful',
-            duration: Snackbar.LENGTH_SHORT
-          })
+            duration: Snackbar.LENGTH_SHORT,
+          });
         })
       }
 

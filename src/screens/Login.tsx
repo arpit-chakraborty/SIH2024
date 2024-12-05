@@ -5,7 +5,7 @@ import React, {useContext, useState} from 'react'
 import Snackbar from 'react-native-snackbar'
 
 //context API
-import {AppwriteContext} from '../appwrite/AppwriteContext'
+import {AuthContext} from '../appwrite/AuthContext'
 
 // Navigation
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -18,38 +18,19 @@ type LoginScreenProps = NativeStackScreenProps<AuthStackParamList, 'Login'>
 
 
 const Login = ({navigation}: LoginScreenProps) => {
-  const {appwrite,isLoggedIn, setIsLoggedIn} = useContext(AppwriteContext);
+  const {login} = useContext(AuthContext);
 
   const [error, setError] = useState<string>('');
 
-  const [email, setEmail] = useState<string>('');
+  const [id, setid] = useState<string>('');
   const [password, setPassword] = useState<string>('');
 
   const handleLogin = () => {
-    if (email.length < 1 || password.length < 1) {
+    if (id.length < 1 || password.length < 1) {
       setError('All fields are required')
     } else {
-      const user = {
-        email,
-        password
-      }
-      appwrite
-      .login(user)
-      .then((response) => {
-        if (response) {
-          setIsLoggedIn(true);
-          Snackbar.show({
-            text: 'Login Success',
-            duration: Snackbar.LENGTH_SHORT
-          })
-          console.log(isLoggedIn)
-        }
-      })
-      .catch(e => {
-        console.log(e);
-        setEmail('Incorrect email or password')
-        
-      })
+      login(id, password);
+      setError('');
     }
   }
   return (
@@ -59,7 +40,7 @@ const Login = ({navigation}: LoginScreenProps) => {
         <Text style={styles.backArrow}>←</Text>
       </TouchableOpacity>
       <Image 
-        source={require('../../assets/logo.png')} // Replace with actual logo URL
+        source={require('../../assets/logo.png')}
         style={styles.logo}
       />
       <Text style={styles.title}>LogIn to Start</Text>
@@ -68,10 +49,10 @@ const Login = ({navigation}: LoginScreenProps) => {
       <Text style={styles.label}>Username or Email</Text>
       <TextInput 
         style={styles.input}
-        value={email}
+        value={id}
         onChangeText={text => {
           setError('');
-          setEmail(text);
+          setid(text);
         }}
         placeholder="Enter Email"
         placeholderTextColor="#000"
@@ -158,6 +139,7 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderColor: '#000',
+    color: '#000',
   },
   forgotPassword: {
     alignSelf: 'flex-end',

@@ -4,7 +4,8 @@ import {
   StatusBar,
 } from 'react-native';
 
-import {AppwriteProvider} from './appwrite/AppwriteContext'
+import {AuthProvider} from './appwrite/AuthContext'
+import { AppProvider } from './AppContext';
 
 import {Router} from './routes/Router'
 
@@ -12,9 +13,11 @@ function App(): JSX.Element {
 
 
   return (
-    <AppwriteProvider>
-      <Router />
-    </AppwriteProvider>
+    <AuthProvider>
+      <AppProvider>
+        <Router />
+      </AppProvider>
+    </AuthProvider>
   );
 }
 
