@@ -36,12 +36,6 @@ const CustomDrawerContent = (props: any) => {
           icon={() => <Text style={styles.icon}>👤</Text>}
         />
         <DrawerItem
-          label="Get Verified"
-          onPress={() => {}}
-          labelStyle={styles.drawerLabel}
-          icon={() => <Text style={styles.icon}>✅</Text>}
-        />
-        <DrawerItem
           label="Settings"
           onPress={() => {}}
           labelStyle={styles.drawerLabel}

@@ -46,7 +46,7 @@ const Login = ({navigation}: LoginScreenProps) => {
       <Text style={styles.title}>LogIn to Start</Text>
 
       
-      <Text style={styles.label}>Username or Email</Text>
+      <Text style={styles.label}>Badge Number</Text>
       <TextInput 
         style={styles.input}
         value={id}
@@ -70,9 +70,7 @@ const Login = ({navigation}: LoginScreenProps) => {
         placeholderTextColor="#000"
         secureTextEntry
       />
-      <TouchableOpacity style={styles.forgotPassword}>
-        <Text style={styles.forgotText}>Forgot?</Text>
-      </TouchableOpacity>
+
 
       <TouchableOpacity style={styles.loginButton}
       onPress={handleLogin}

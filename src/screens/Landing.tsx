@@ -22,15 +22,15 @@ const Landing = ({navigation}: LoandingScreenProps) => {
         resizeMode="contain"
       />
       <Pressable style={styles.signupButton}
-        onPress={() => navigation.navigate('Signup')}>
-        <Text style={styles.signupText}>Sign Up</Text>
+        onPress={() => navigation.navigate('Login')}>
+        <Text style={styles.signupText}>Login</Text>
       </Pressable>
       <Pressable
-        onPress={() => navigation.navigate('Login')}
+        onPress={() => navigation.navigate('Signup')}
       >
       <Text style={styles.footerText}>
         Already have an account?{' '}
-        <Text style={styles.loginText}>Login</Text>
+        <Text style={styles.loginText}>Sign up</Text>
       </Text>
       </Pressable>
     </View>

@@ -35,7 +35,6 @@ export const addBotMessage = async (
   message: Message
 ) => {
 
-  console.log("Bot: ",message);
   const reply = await fetchResponse(message);
 
 

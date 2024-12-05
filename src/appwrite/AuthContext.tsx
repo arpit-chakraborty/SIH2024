@@ -2,12 +2,13 @@
 import React, { createContext, useState, useEffect, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import AuthService from './AuthService'; // Import your AuthService
+import Snackbar from 'react-native-snackbar';
 
 // Define types for the context
 interface AuthContextType {
   userToken: string | null;
   login: (id: string, password: string) => Promise<void>;
-  signup: (id: string, password: string) => Promise<void>;
+  signup: (id: string, password: string, name: string, mobileNo: string, policeStaitionId: string) => Promise<void>;
   logout: () => Promise<void>;
   getCurrentUser: () => Promise<User | null>;
 }
@@ -43,19 +44,30 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       setUserToken(token);
     } catch (error) {
       console.error('Login failed:', error);
+      Snackbar.show({
+        text: "Wrong Id or Password",
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: '#e74c3c',
+      })
     }
   };
 
 
   // Function to handle signup
-  const signup = async (id: string, password: string) => {
+  const signup = async (id: string, password: string, name: string, mobileNo: string, policeStaitionId: string) => {
     try {
-      const response = await AuthService.signup({ id, password });
+      console.log({ id, password, name, mobileNo, policeStaitionId });
+      const response = await AuthService.signup({ id, password, name, mobileNo, policeStaitionId });
       const token = response.token;
       await AsyncStorage.setItem('userToken', token);
       setUserToken(token);
     } catch (error) {
       console.error('Signup failed:', error);
+      Snackbar.show({
+        text: "Signup Failed",
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: '#e74c3c',
+      })
     }
   };
 

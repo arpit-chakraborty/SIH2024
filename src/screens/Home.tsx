@@ -49,7 +49,7 @@ type HomeScreenProps = {
 
 const Home: React.FC<HomeScreenProps> = ({navigation}) => {
   const {messages, setMessages, caseNumber, victimName, userData} = useAppContext();
-  const { getCurrentUser, logout } = useContext(AuthContext);
+  const { logout } = useContext(AuthContext);
   const [input, setInput] = useState('');
   const flatListRef = useRef<FlatList<Message>>(null);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -58,6 +58,7 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [newCaseVisible, setNewCaseVisible] = useState(false);
   const [itemsData, setItemsData] = useState([]);
+  const [isPlaying, setIsPlaying] = useState(false);
 
   const appState = useRef(AppState.currentState);
   
@@ -66,6 +67,16 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
     const data = await fetchCases(userData?.unique_id);
     setItemsData(data);
     setDrawerVisible(true);
+  };
+
+  const PlayPause = (uri: string) => {
+    if (isPlaying) {
+      audioRecorderPlayer.pausePlayer();
+      setIsPlaying(false);
+    } else {
+      audioRecorderPlayer.startPlayer(uri);
+      setIsPlaying(true);
+    }
   };
 
   // const saveChatData = async () => {
@@ -224,7 +235,7 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
       )}
       {item.type === 'audio' && (
         <TouchableOpacity
-          onPress={() => audioRecorderPlayer.startPlayer(item.uri)}>
+          onPress={() => PlayPause(item.uri)}>
           <Icon name="play-circle" size={30} color="black" />
         </TouchableOpacity>
       )}
@@ -242,6 +253,13 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
             onPress={() => showDrawer()}
           />
         </TouchableOpacity>
+        {!caseNumber && 
+          <View style={styles.warning}>
+            <Text style={{color: 'red', fontWeight: 'bold'}}>
+              Case Not Saved
+            </Text>
+          </View>
+        }
         <TouchableOpacity>
           <Icon
             name="user-circle-o"
@@ -503,6 +521,14 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffd700",
     padding: 15,
     elevation: 11,
+  },
+  warning:{
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: '40%',
+    height: 30,
   }
 });
 

@@ -1,7 +1,7 @@
 // AuthService.ts
 import axios from 'axios';
 
-const API_URL = 'http://192.168.29.225:3000/api/auth'; // Replace with your backend URL
+const API_URL = 'http://192.168.29.225:3000/api/auth';
 
 type LoginPayload = {
   id: string;
@@ -11,6 +11,9 @@ type LoginPayload = {
 type SignupPayload = {
   id: string;
   password: string;
+  name: string;
+  mobileNo: string;
+  policeStaitionId: string;
 };
 
 class AuthService {
@@ -26,9 +29,10 @@ class AuthService {
   }
 
   // Signup function
-  static async signup({ id, password }: SignupPayload) {
+  static async signup({ id, password, name, mobileNo, policeStaitionId }: SignupPayload) {
     try {
-      const response = await axios.post(`${API_URL}/signup`, { id, password });
+      console.log({ id, password, name, mobileNo, policeStaitionId });
+      const response = await axios.post(`${API_URL}/signup`, { id, password, name, mobileNo, policeStaitionId });
       return response.data;
     } catch (error) {
       console.error('Signup error:', error);
