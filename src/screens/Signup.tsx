@@ -33,9 +33,27 @@ const Signup = ({ navigation }: SignupScreenProps) => {
   const handleSignup = () => {
     if (id.length < 1 || password.length < 1) {
       setError('All fields are required');
+      Snackbar.show({
+        text: "All fields are required",
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: '#e74c3c',
+      })
     } else if (!isChecked) {
       setError('Please accept terms and conditions');
-    } else {
+      Snackbar.show({
+        text: "Please accept terms and conditions",
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: '#e74c3c',
+      })
+    } else if (mobileNo.length < 10){
+      setError('Provide valid Phone No.')
+      Snackbar.show({
+        text: "Provide valid Phone No.",
+        duration: Snackbar.LENGTH_SHORT,
+        backgroundColor: '#e74c3c',
+      })
+    }
+    else {
       setError('');
       signup(id, password, name, mobileNo, policeStaitionId);
     }

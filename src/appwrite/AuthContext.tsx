@@ -91,7 +91,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   const fetchUserDetails = async (token: string) => {
     try {
-      const userData = await AuthService.getUserDetails(token); // Implement this in your AuthService
+      const userData = await AuthService.getUserDetails(token);
       setUserDetails(userData);
       return userData;
     } catch (error) {

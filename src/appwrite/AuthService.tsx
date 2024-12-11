@@ -1,7 +1,7 @@
 // AuthService.ts
 import axios from 'axios';
 
-const API_URL = 'http://192.168.29.225:3000/api/auth';
+const API_URL = 'https://p8z4c9rg-3000.inc1.devtunnels.ms/api/auth';
 
 type LoginPayload = {
   id: string;

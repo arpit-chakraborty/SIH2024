@@ -10,12 +10,14 @@ import AppStack2 from './AppStack2';
 
 export const Router = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [currentUser, setCurrentUser] = useState<{unique_id: string} | null>(null);
   const { userToken, getCurrentUser } = useContext(AuthContext);
 
   useEffect(() => {
     const checkUser = async () => {
       try {
-        const currentUser = await getCurrentUser();
+        const user = await getCurrentUser();
+        setCurrentUser(user);
         console.log('Current User:', currentUser);  
         setIsLoading(false);
       } catch (error) {
@@ -33,7 +35,7 @@ export const Router = () => {
 
   return (
     <NavigationContainer>
-      {userToken ? <AppStack2 /> : <AuthStack />}
+      {userToken && currentUser ? <AppStack2 /> : <AuthStack />}
     </NavigationContainer>
   );
 };

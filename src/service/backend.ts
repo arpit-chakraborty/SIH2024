@@ -1,9 +1,10 @@
 // apiService.ts
 import axios from 'axios';
 import { Message } from '../components/ChatUtils';
+import Snackbar from 'react-native-snackbar';
 
-const API_URL = 'http://192.168.29.225:3000/api/data';
-const API_URL_RESPONSE = 'http://192.168.29.225:3000/api/response';
+const API_URL = 'https://p8z4c9rg-3000.inc1.devtunnels.ms/api/data';
+const API_URL_RESPONSE = 'https://p8z4c9rg-3000.inc1.devtunnels.ms/api/response';
 
 // Function to save messages to the backend
 export const saveMessages = async (messages: any[], uniqueId: string, victimName: string, caseNumber: string) => {
@@ -56,6 +57,11 @@ export const fetchResponse = async (message: Message | undefined) => {
     const response = await axios.post(`${API_URL_RESPONSE}/getResponse`, { data });
     return response.data;
   } catch (error) {
+    Snackbar.show({
+      text: "Network Error",
+      duration: Snackbar.LENGTH_SHORT,
+      backgroundColor: '#e74c3c',
+    })
     console.error('Error fetching response:', error);
     throw error;
   }

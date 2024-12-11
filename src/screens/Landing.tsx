@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
     width: 250,
     height: 250,
     marginBottom: 50,
-    marginTop: 50,
+    marginTop: 30,
   },
   signupButton: {
     backgroundColor: '#000', // Black button background

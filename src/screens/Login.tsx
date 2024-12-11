@@ -104,10 +104,9 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   logo: {
-    width: 130,
-    height: 140,
+    width: 140,
+    height: 150,
     marginBottom: 20,
-
   },
   title: {
     fontSize: 28,

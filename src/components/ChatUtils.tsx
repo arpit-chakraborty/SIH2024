@@ -63,6 +63,7 @@ export const addMediaMessage = (
     sender: 'user',
     type: type,
   };
+  console.log(newMessage);
   setMessages((prevMessages) => [...prevMessages, newMessage]);
   addBotMessage(setMessages, newMessage);
 };
