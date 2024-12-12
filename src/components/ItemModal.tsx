@@ -178,8 +178,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   logo: {
-    width: 300,
-    height: 300,
+    width: 250,
+    height: 250,
     resizeMode: 'contain',
     opacity: 30,
     marginTop: '40%',

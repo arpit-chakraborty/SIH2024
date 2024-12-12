@@ -16,6 +16,7 @@ import Snackbar from 'react-native-snackbar';
 import { AuthContext } from '../appwrite/AuthContext';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { AuthStackParamList } from '../routes/AuthStack';
+import { verifyUser } from '../service/backend';
 
 type SignupScreenProps = NativeStackScreenProps<AuthStackParamList, 'Signup'>;
 
@@ -28,9 +29,24 @@ const Signup = ({ navigation }: SignupScreenProps) => {
   const [mobileNo, setMobileNo] = useState<string>('');
   const [policeStaitionId, setPoliceStaitionId] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const [doSignup, setDoSignup] = useState(false);
 
+  const handleUser = async (id: string) => {
+    try {
+      const response = await verifyUser(id);
+      console.log(response);
+      if(response){
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Error verifying user:', error);
+      return false;
+    }
+  };
 
-  const handleSignup = () => {
+  const handleSignup = async() => {
+    console.log(id, password, name, mobileNo, policeStaitionId);
     if (id.length < 1 || password.length < 1) {
       setError('All fields are required');
       Snackbar.show({
@@ -52,11 +68,25 @@ const Signup = ({ navigation }: SignupScreenProps) => {
         duration: Snackbar.LENGTH_SHORT,
         backgroundColor: '#e74c3c',
       })
+    } else {
+      setDoSignup(true);
     }
-    else {
-      setError('');
-      signup(id, password, name, mobileNo, policeStaitionId);
-    }
+    if(doSignup){
+      const Verified = await handleUser(id);
+      console.log(Verified);
+      if(Verified){
+        setError('');
+        signup(id, password, name, mobileNo, policeStaitionId);
+      }
+      else{
+        setError('User is not Verified');
+        Snackbar.show({
+          text: "User is not Verified",
+          duration: Snackbar.LENGTH_SHORT,
+          backgroundColor: '#e74c3c',
+        })
+      }
+  }
   };
 
   return (

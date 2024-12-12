@@ -3,6 +3,7 @@ import axios from 'axios';
 import { Message } from '../components/ChatUtils';
 import Snackbar from 'react-native-snackbar';
 
+const API_URL_VERIFY = 'https://p8z4c9rg-3000.inc1.devtunnels.ms/api/auth';
 const API_URL = 'https://p8z4c9rg-3000.inc1.devtunnels.ms/api/data';
 const API_URL_RESPONSE = 'https://p8z4c9rg-3000.inc1.devtunnels.ms/api/response';
 
@@ -66,3 +67,15 @@ export const fetchResponse = async (message: Message | undefined) => {
     throw error;
   }
 }
+
+export const verifyUser = async (uniqueId: string|undefined) => {
+  try {
+    console.log('BE',uniqueId);
+    const response = await axios.get(`https://p8z4c9rg-3000.inc1.devtunnels.ms/api/data/verify?unique_id=${uniqueId}`);
+    console.log('BE',response.data);
+    return response.data.exists;
+  } catch (error) {
+    console.error('Error fetching User:', error);
+    throw error;
+  }
+};

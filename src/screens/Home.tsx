@@ -62,6 +62,20 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
 
   const appState = useRef(AppState.currentState);
   
+  const parseBotMessageToRows = (text: string) => {
+    const rows: {key: string; value: string}[] = [];
+    const lines = text.split('\n'); // Split text by newlines
+
+    lines.forEach(line => {
+      const [key, ...valueParts] = line.split(':'); // Split into key and value
+      const value = valueParts.join(':').trim(); // Recombine value in case it has colons
+      if (key && value) {
+        rows.push({key: key.trim(), value});
+      }
+    });
+
+    return rows;
+  };
 
   const showDrawer = async() => {
     const data = await fetchCases(userData?.unique_id);
@@ -220,6 +234,7 @@ const Home: React.FC<HomeScreenProps> = ({navigation}) => {
   };
 
   const renderItem = ({item}: {item: Message}) => (
+    const isBotMessage = item.sender === 'bot';
     <View
       style={[
         styles.messageBubble,
